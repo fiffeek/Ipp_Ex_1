@@ -5,3 +5,5 @@
 #define NULL_FILM -1
 #define MAX_INPUT_SIZE 50
 #define WORST_FILM -1
+#define ADD_USER_SIZE 7
+#define ADD_MOVIE_SIZE 8
