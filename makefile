@@ -1,23 +1,25 @@
 CC=gcc
 CXX=g++
 CFLAGS=-Wall -Wextra -std=c11 -O2
+DEPS=constants.h
+OBJS=list.o doubleLinkedList.o treeStruct.o main.o
+EXE=main
 
-all: main
+.PHONY: clean all
 
-list.o: list.c list.h constants.h
-	$(CC) $(CFLAGS) -c list.c
+all: $(OBJS) $(EXE)
 
-doubleLinkedList.o: doubleLinkedList.c doubleLinkedList.h constants.h
-	$(CC) $(CFLAGS) -c doubleLinkedList.c
+%.o: %.c %.h $(DEPS)
+	$(CC) $(CFLAGS) -c $<
 
-treeStruct.o: treeStruct.c treeStruct.h list.h doubleLinkedList.h constants.h
+treeStruct.o: treeStruct.c treeStruct.h list.h doubleLinkedList.h $(DEPS)
 	$(CC) $(CFLAGS) -c treeStruct.c
 
-main.o: main.c treeStruct.h constants.h
+main.o: main.c treeStruct.h $(DEPS)
 	$(CC) $(CFLAGS) -c main.c
 
-main: list.o main.o treeStruct.o doubleLinkedList.o
-	$(CC) $(CFLAGS) -o main main.o treeStruct.o list.o doubleLinkedList.o
+main: $(OBJS)
+	$(CC) $(CFLAGS) -o main $(OBJS)
 
 brute: brute.cpp
 	$(CXX) -o brute brute.cpp

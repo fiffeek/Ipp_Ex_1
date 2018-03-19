@@ -36,6 +36,7 @@ void addFrontBList(int value, BList **list) {
 
 void addAfterFirstElemBList(int value, BList *list) {
   BList *elem = initBList(value);
+  
   elem->next = list->next;
   list->next->prev = elem;
   list->next = elem;
