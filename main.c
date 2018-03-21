@@ -6,7 +6,7 @@
 #include "constants.h"
 
 bool checkTwoInts(char *input, int k) {
-  int i = 0;
+  int i = 0, int1Size = 0, int2Size = 0;
 
   while (i < k && input[i] != ' ') {
     if (!((input[i] >= 'a' && input[i] <= 'z')
@@ -30,7 +30,13 @@ bool checkTwoInts(char *input, int k) {
       return false;
     }
 
+    int1Size++;
     i++;
+  }
+
+  if (int1Size > 6) {
+    fprintf(stderr, "%s\n", "ERROR");
+    return false;
   }
 
   if (input[i] != ' ') {
@@ -46,7 +52,13 @@ bool checkTwoInts(char *input, int k) {
       return false;
     }
 
+    int2Size++;
     i++;
+  }
+
+  if (int2Size > 6) {
+    fprintf(stderr, "%s\n", "ERROR");
+    return false;
   }
 
   if (input[i] != '\n') {
@@ -77,13 +89,21 @@ bool checkOneInt(char *input, int k) {
   }
   i++;
 
+  int intSize = 0;
+
   while (i < k && input[i] != '\n') {
     if (input[i] < '0' || input[i] > '9') {
       fprintf(stderr, "%s\n", "ERROR");
       return false;
     }
 
+    intSize++;
     i++;
+  }
+
+  if (intSize > 6) {
+    fprintf(stderr, "%s\n", "ERROR");
+    return false;
   }
 
   if (input[i] != '\n') {
@@ -176,7 +196,7 @@ int main() {
         if (!sscanf(input, "%d %d", &parentID, &userID))
             err = true;
 
-        if (!addChild(parentID, userID) || err) {
+        if (err || !addChild(parentID, userID)) {
           // prompt about failure to stderr
           fprintf(stderr, "%s\n", "ERROR");
         } else {
@@ -189,7 +209,7 @@ int main() {
         if (!sscanf(input, "%d", &userID))
             err = true;
 
-        if (!deleteChild(userID) || err) {
+        if (err || !deleteChild(userID)) {
           fprintf(stderr, "%s\n", "ERROR");
         } else {
           printf("OK\n");
@@ -200,7 +220,7 @@ int main() {
         if (!sscanf(input, "%d %d", &userID, &movieRating))
             err = true;
 
-        if (!addMovie(userID, movieRating) || err) {
+        if (err || !addMovie(userID, movieRating)) {
           fprintf(stderr, "%s\n", "ERROR");
         } else {
           printf("OK\n");
@@ -211,7 +231,7 @@ int main() {
         if (!sscanf(input, "%d %d", &userID, &movieRating))
             err = true;
 
-        if (!deleteMovie(userID, movieRating) || err) {
+        if (err || !deleteMovie(userID, movieRating)) {
           fprintf(stderr, "%s\n", "ERROR");
         } else {
           printf("OK\n");
@@ -222,11 +242,12 @@ int main() {
         if (!sscanf(input, "%d %d", &userID, &k))
             err = true;
 
-        if (!bestMovies(userID, k) || err) {
+        if (err || !bestMovies(userID, k)) {
           fprintf(stderr, "%s\n", "ERROR");
         }
       } else {
         while(fgetc(stdin) != '\n'){};
+
         fprintf(stderr, "%s\n", "ERROR");
       }
     }

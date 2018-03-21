@@ -44,10 +44,12 @@ void initNode(int number) {
 
   BList *temp = initBList(GUARDIAN); // [GUARDIAN] = NOT EXISTING NODES [GUARDIANS]
   addFrontBList(GUARDIAN, &temp);
+
   zero->firstChild = temp;
   zero->lastChild = getNextBList(temp);
   zero->movies = nullTList();
   zero->pointerOnParentsList = nullBList();
+
   updatePointer(number, zero);
 
   return;
@@ -72,6 +74,7 @@ bool addChild(int parent, int current) {
   initNode(current);
   Node *curr = getPointer(current);
   Node *par = getPointer(parent);
+
   addAfterFirstElemBList(current, (par->firstChild));
   curr->pointerOnParentsList = getNextBList(par->firstChild);
 
@@ -294,6 +297,7 @@ void marathon(Node *current, TList *moviesArray,
   // time to change moviesArray
   check = tempArray;
   moviescheck = moviesArray;
+
   while(!isNull(check) && !isNull(moviescheck)) {
     setValue(moviescheck, getValue(check));
     check = getNext(check);
@@ -326,6 +330,7 @@ bool bestMovies(int current, int k) {
         addFront(NULL_FILM, &moviesArray);
         addFront(NULL_FILM, &tempArray);
       }
+
       i++;
     }
   } else {
@@ -351,6 +356,7 @@ bool bestMovies(int current, int k) {
     connectLists(lastMovie, initList(NULL_FILM));
     lastMovie = getNext(lastMovie);
     addFront(NULL_FILM, &tempArray);
+    
     i++;
   }
 

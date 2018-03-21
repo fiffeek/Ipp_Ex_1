@@ -9,20 +9,20 @@ EXE=main
 
 all: $(OBJS) $(EXE)
 
-%.o: %.c %.h $(DEPS)
-	$(CC) $(CFLAGS) -c $<
-
-treeStruct.o: treeStruct.c treeStruct.h list.h doubleLinkedList.h $(DEPS)
-	$(CC) $(CFLAGS) -c treeStruct.c
+main: $(OBJS)
+	$(CC) $(CFLAGS) -o main $(OBJS)
 
 main.o: main.c treeStruct.h $(DEPS)
 	$(CC) $(CFLAGS) -c main.c
 
-main: $(OBJS)
-	$(CC) $(CFLAGS) -o main $(OBJS)
+treeStruct.o: treeStruct.c treeStruct.h list.h doubleLinkedList.h $(DEPS)
+	$(CC) $(CFLAGS) -c treeStruct.c
+
+%.o: %.c %.h $(DEPS)
+	$(CC) $(CFLAGS) -c $<
 
 brute: brute.cpp
 	$(CXX) -o brute brute.cpp
 
 clean:
-	rm -f *.o main *.err *.in *.out brute
+	rm -f *.o *.gch main *.err *.in *.out brute
