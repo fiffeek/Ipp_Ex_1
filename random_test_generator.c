@@ -36,7 +36,7 @@ int main() {
 
   int numberOfOperations = (rand() % A) + 1;
   while (numberOfOperations--) {
-    int operation = (rand() % 10);
+    int operation = (rand() % 5);
     int firstInt = (rand() % B);
     int secondInt = (rand() % C);
 

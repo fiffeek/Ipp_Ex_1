@@ -230,10 +230,11 @@ void marathon(Node *current, TList *moviesArray,
 
   TList *list = current->movies;
   BList *children = current->firstChild;
-  int val = WORST_FILM;
+  // int val = WORST_FILM;
+  int val = maxVal;
 
   // max value to pass to another marathon instance
-  if (!isNull(list))
+  if (!isNull(list) && val < getValue(list))
     val = getValue(list);
 
   while(!isNullBList(children)) {
@@ -356,7 +357,7 @@ bool bestMovies(int current, int k) {
     connectLists(lastMovie, initList(NULL_FILM));
     lastMovie = getNext(lastMovie);
     addFront(NULL_FILM, &tempArray);
-    
+
     i++;
   }
 

@@ -34,7 +34,7 @@ bool checkTwoInts(char *input, int k) {
     i++;
   }
 
-  if (int1Size > 6) {
+  if (int1Size >= 6) {
     fprintf(stderr, "%s\n", "ERROR");
     return false;
   }
@@ -56,7 +56,7 @@ bool checkTwoInts(char *input, int k) {
     i++;
   }
 
-  if (int2Size > 6) {
+  if (int2Size >= 11) {
     fprintf(stderr, "%s\n", "ERROR");
     return false;
   }
@@ -101,7 +101,7 @@ bool checkOneInt(char *input, int k) {
     i++;
   }
 
-  if (intSize > 6) {
+  if (intSize >= 6) {
     fprintf(stderr, "%s\n", "ERROR");
     return false;
   }
@@ -182,7 +182,7 @@ int main() {
 
   initNode(0);
 
-  while(fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
+  while (fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
     //printf("polecenie : %s\n", input);
     if (!checkLine(input)) {
       continue;
