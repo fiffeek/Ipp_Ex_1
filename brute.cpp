@@ -37,11 +37,11 @@ bool validBounds(int current, int rating) {
 }
 
 bool userAdd(int parent, int userID) {
-  if (tab[parent].intree == false || tab[userID].intree == true)
-    return false;
-
   if (parent < 0 || userID <= 0 || parent >= MAX_SIZE || userID >= MAX_SIZE)
       return false;
+
+  if (tab[parent].intree == false || tab[userID].intree == true)
+    return false;
 
   tab[parent].childList.push_back(userID);
   tab[userID].intree = true;
@@ -50,11 +50,11 @@ bool userAdd(int parent, int userID) {
 }
 
 bool delUser(int userID) {
-  if (tab[userID].intree == false)
-    return false;
-
   if (userID <= 0 || userID >= MAX_SIZE)
       return false;
+
+  if (tab[userID].intree == false)
+    return false;
 
   vector <int> temp;
   temp.clear();
@@ -130,7 +130,8 @@ bool delMovie(int userID, int rating) {
 vector <int> ans;
 
 void marathon_pom(int max_p, int userID) {
-  int max_u = -1;
+  // int max_u = -1;
+  int max_u = max_p;
   int fSize = tab[userID].filmList.size();
   for (int i = 0; i < fSize; i++) {
     max_u = max(max_u, tab[userID].filmList[i]);
@@ -229,6 +230,8 @@ int main() {
       bool err = false;
       if (!scanf("%d %d",&parentID, &userID))
           err = true;
+
+      //printf("%d %d\n", parentID, userID);
 
       if (!userAdd(parentID, userID) || err) {
         // prompt about failure to stderr
