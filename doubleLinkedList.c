@@ -5,11 +5,13 @@
 #include "doubleLinkedList.h"
 #include "constants.h"
 
+// new null pointer
 BList* nullBList() {
   return NULL;
 }
 
-BList* initBList(int value) {
+// list initialisation with a given value
+BList* initBList(short value) {
   BList *new_blist = (BList *)malloc(sizeof(BList));
   if (new_blist == NULL)
     exit(EXIT_STATUS);
@@ -21,21 +23,22 @@ BList* initBList(int value) {
   return new_blist;
 }
 
-// adding the element to two-way linked list
-void addFrontBList(int value, BList **list) {
+// adding the element to two-way linked list (at the front)
+void addFrontBList(short value, BList **list) {
   BList *elem = initBList(value);
 
   if(!isNullBList(*list)) {
     (*list)->prev = elem;
     elem->next = (*list);
   }
-  
+
   (*list) = elem;
 
   return;
 }
 
-void addAfterFirstElemBList(int value, BList *list) {
+// adds given element after the first element in a given list
+void addAfterFirstElemBList(short value, BList *list) {
   BList *elem = initBList(value);
 
   elem->next = list->next;
@@ -84,6 +87,14 @@ void deleteConnectBLists(BList *toDelete, BList *startList2, BList *endList2) {
   return;
 }
 
+void specificDeletionInsideList(BList *firstList) {
+  firstList->prev->next = firstList->next;
+  firstList->next->prev = firstList->prev;
+
+  return;
+}
+
+// simple setters and getters
 BList* getNextBList(BList *list) {
   return list->next;
 }
@@ -92,10 +103,11 @@ BList* getPrevBList(BList *list) {
   return list->prev;
 }
 
-int getValueBList(BList *list) {
+short getValueBList(BList *list) {
   return list->value;
 }
 
+// frees the used memory
 void freeBList(BList *front) {
   if (isNullBList(front))
     return;

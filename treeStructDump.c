@@ -16,27 +16,22 @@ struct node{
   BList *lastChild;
   BList *pointerOnParentsList;
   TList *movies;
-  TList *possibleValue;
 };
 
 typedef struct node Node;
 
-// static array of pointers to make some functions run in a constant time
 Node *pointers[MAX_SIZE] = {NULL};
 
-// updates the specific array element to a given Node pointer
 void updatePointer(int index, Node *ptr) {
   pointers[index] = ptr;
 
   return;
 }
 
-// simple setters and getters
 Node* getPointer(int index) {
   return pointers[index];
 }
 
-// null check in order to shorten the functions
 bool isNullNode(int index) {
   return pointers[index] == NULL;
 }
@@ -47,12 +42,9 @@ void initNode(int number) {
   if (zero == NULL)
     exit(EXIT_STATUS);
 
-  // [GUARDIAN] = NOT EXISTING NODES [GUARDIANS]
-  // adds guardians at the front and at the end of the children list
-  BList *temp = initBList(GUARDIAN);
+  BList *temp = initBList(GUARDIAN); // [GUARDIAN] = NOT EXISTING NODES [GUARDIANS]
   addFrontBList(GUARDIAN, &temp);
 
-  zero->possibleValue = nullTList();
   zero->firstChild = temp;
   zero->lastChild = getNextBList(temp);
   zero->movies = nullTList();
@@ -83,9 +75,7 @@ bool addChild(int parent, int current) {
   Node *curr = getPointer(current);
   Node *par = getPointer(parent);
 
-  // types castint and adding to children list after a front GUARDIAN
-  short temp = (short) current;
-  addAfterFirstElemBList(temp, (par->firstChild));
+  addAfterFirstElemBList(current, (par->firstChild));
   curr->pointerOnParentsList = getNextBList(par->firstChild);
 
   return true;
@@ -106,7 +96,9 @@ bool deleteChild(int current) {
       curr->firstChild->next, curr->lastChild->prev);
   } else {
     // there are no children of the node that is being deleted
-    specificDeletionInsideList(curr->pointerOnParentsList);
+    // we have to change the linked list by 'hand'
+    curr->pointerOnParentsList->prev->next = curr->pointerOnParentsList->next;
+    curr->pointerOnParentsList->next->prev = curr->pointerOnParentsList->prev;
 
     free(curr->pointerOnParentsList);
   }
@@ -205,7 +197,6 @@ void freeTree(Node *ptr) {
     list = list->next;
   }
 
-  ptr->possibleValue = NULL;
   freeBList(ptr->firstChild);
   freeTList(ptr->movies);
   free(ptr);
@@ -221,13 +212,26 @@ void traverseTree(Node *ptr) {
 // memory complexity : O(2k + stack [prob log m])
 // time complexity : O(k * n), where n is
 // a number of children of *current
-int marathon(int curr, int maxVal, int previousMax) {
-  Node *current = getPointer(curr);
-  int answer = WORST_FILM;
-  int val = maxVal;
+void marathon(Node *current, TList *moviesArray,
+  int maxVal, int k, TList *tempArray) {
+  bool stop = false;
+  // check = temparray actual place pointer
+  TList *check = tempArray;
+  TList *moviescheck = moviesArray;
+
+  // cleaning temp array
+  for(int i = 0; i < k; i++) {
+    setValue(check, NULL_FILM);
+    check = getNext(check);
+  }
+
+  // pointer back to head
+  check = tempArray;
 
   TList *list = current->movies;
   BList *children = current->firstChild;
+  // int val = WORST_FILM;
+  int val = maxVal;
 
   // max value to pass to another marathon instance
   if (!isNull(list) && val < getValue(list))
@@ -240,39 +244,65 @@ int marathon(int curr, int maxVal, int previousMax) {
       continue;
     }
 
-    int temp = marathon(getValueBList(children), val, previousMax);
-    if (temp > answer) answer = temp;
+    marathon(getPointer(getValueBList(children)),
+      moviesArray, val, k, tempArray);
 
     children = getNextBList(children);
   }
 
-  if (!isNull(current->possibleValue) && current->possibleValue->value == previousMax)
-    current->possibleValue = current->possibleValue->next;
-
-  if (isNull(current->possibleValue))
-    return answer;
-
-  int temp = current->possibleValue->value;
-  if (temp > maxVal && temp > answer) {
-    return temp;
-  }
-
-  return answer;
-}
-
-void makePossbileValues(int curr) {
-  Node *current = getPointer(curr);
-  current->possibleValue = current->movies;
-  BList *children = current->firstChild;
-
-  while(!isNullBList(children)) {
-    if (getValueBList(children) == GUARDIAN) {
-      children = getNextBList(children);
-      continue;
+  // something like merge sort
+  // traversing two list by two pointers to get k max values from both of them
+  while (!isNull(moviescheck) && !isNull(check) && !isNull(list)) {
+    if (getValue(moviescheck) > getValue(list) && getValue(list) > maxVal) {
+        setValue(check, getValue(moviescheck));
+        check = getNext(check);
+        moviescheck = getNext(moviescheck);
+    } else if (getValue(moviescheck) < getValue(list)
+      && getValue(list) > maxVal) {
+        setValue(check, getValue(list));
+        check = getNext(check);
+        list = getNext(list);
+    } else if (getValue(list) > maxVal){
+        // they are equal
+        setValue(check, getValue(list));
+        check = getNext(check);
+        moviescheck = getNext(moviescheck);
+        list = getNext(list);
+    } else {
+      stop = true;
+      break;
     }
+  }
 
-    makePossbileValues(getValueBList(children));
-    children = getNextBList(children);
+  // we re finished but there are still elements in list or array
+  // it is possible but not neccessary to be the case
+  if (isNull(list) || stop) {
+    // there are some elements in the array
+    while (!isNull(moviescheck) && !isNull(check)) {
+      setValue(check, getValue(moviescheck));
+      check = getNext(check);
+      moviescheck = getNext(moviescheck);
+    }
+  }
+
+  if (isNull(moviescheck)) {
+    // there are some elements in the list
+    while (!isNull(list) && !isNull(check) && getValue(list) > maxVal) {
+      setValue(check, getValue(list));
+      check = getNext(check);
+      list = getNext(list);
+    }
+  }
+
+  // we finished builing tempArray
+  // time to change moviesArray
+  check = tempArray;
+  moviescheck = moviesArray;
+
+  while(!isNull(check) && !isNull(moviescheck)) {
+    setValue(moviescheck, getValue(check));
+    check = getNext(check);
+    moviescheck = getNext(moviescheck);
   }
 
   return;
@@ -286,34 +316,78 @@ bool bestMovies(int current, int k) {
   if (!validBounds(current, k))
     return false;
 
-  makePossbileValues(current);
+  TList *moviesArray = NULL;
+  TList *tempArray = initList(NULL_FILM);
+  TList *lastMovie = moviesArray;
+  TList *list = getPointer(current)->movies;
+  int i = 0;
 
-  int val = WORST_FILM;
-  int previousMax = WORST_FILM;
-  for (int i = 0; i < k; i++) {
-    previousMax = marathon(current, val, previousMax);
+  // no movies
+  if (isNull(list)) {
+    while(i < k) {
+      if (i == 0) {
+        moviesArray = initList(NULL_FILM);
+      } else {
+        addFront(NULL_FILM, &moviesArray);
+        addFront(NULL_FILM, &tempArray);
+      }
 
-    if (previousMax == WORST_FILM) {
-      if (i == 0)
-        printf("NONE\n");
-      else
-        printf("\n");
-
-      break;
+      i++;
     }
+  } else {
+    // moviesArray = answerArray = Movies[1::k]
+    while (!isNull(list) && i < k) {
+      if (i == 0) {
+        moviesArray = initList(getValue(list));
+        lastMovie = moviesArray;
+      }
+      else {
+        connectLists(lastMovie, initList(getValue(list)));
+        lastMovie = getNext(lastMovie);
+        addFront(NULL_FILM, &tempArray);
+      }
 
-    if(i == 0 && k == 1)
-    printf("%d\n", previousMax);
-    else if(i == 0)
-      printf("%d", previousMax);
-    else if(i < k - 1)
-      printf(" %d", previousMax);
-    else
-      printf(" %d\n", previousMax);
+      list = getNext(list);
+      i++;
+    }
   }
 
-  if (k == 0)
+  // moviesArray = moviesArray + [(-1), ..., (-1)] (k - moviesArraylength elem)
+  while (i < k) {
+    connectLists(lastMovie, initList(NULL_FILM));
+    lastMovie = getNext(lastMovie);
+    addFront(NULL_FILM, &tempArray);
+
+    i++;
+  }
+
+  // if movies are not empty we set val to max rating from a movies list
+  int val = WORST_FILM;
+  if (!isNull(list))
+    val = getPointer(current)->movies->value;
+
+  marathon(getPointer(current), moviesArray, val, k, tempArray);
+  // simple output
+  if (isNull(moviesArray) || getValue(moviesArray) == NULL_FILM)
     printf("NONE\n");
+  else {
+    TList *temp = moviesArray;
+
+    while (!isNull(temp) && getValue(temp) != NULL_FILM) {
+      if ((!isNull(getNext(temp)) && getValue(getNext(temp)) == NULL_FILM)
+          || isNull(getNext(temp))) {
+        printf("%d\n", getValue(temp));
+      } else {
+        printf("%d ", getValue(temp));
+      }
+
+      temp = getNext(temp);
+    }
+  }
+
+  // free the used memory
+  freeTList(moviesArray);
+  freeTList(tempArray);
 
   return true;
 }

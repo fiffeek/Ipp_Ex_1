@@ -2,16 +2,16 @@
 #define LIST_DOUBLE_SEEN
 
 struct doubleList{
-  int value;
+  short value;
   struct doubleList *next;
   struct doubleList *prev;
 };
 
 typedef struct doubleList BList;
 
-extern BList* initBList(int value);
+extern BList* initBList(short value);
 
-extern void addFrontBList(int value, BList **list);
+extern void addFrontBList(short value, BList **list);
 
 extern bool isNullBList(BList *list);
 
@@ -20,13 +20,15 @@ extern void traverseBList(BList *list);
 extern void deleteConnectBLists(BList *toDelete,
   BList *startList2, BList *endList2);
 
-extern void addAfterFirstElemBList(int value, BList *list);
+extern void specificDeletionInsideList(BList *firstList);
+
+extern void addAfterFirstElemBList(short value, BList *list);
 
 extern BList* getNextBList(BList *list);
 
 extern BList* getPrevBList(BList *list);
 
-extern int getValueBList(BList *list);
+extern short getValueBList(BList *list);
 
 extern void freeBList(BList *front);
 

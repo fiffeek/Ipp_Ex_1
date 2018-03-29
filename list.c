@@ -31,7 +31,7 @@ void addFront(int value, TList **list) {
   return;
 }
 
-//externGetters
+// externGetters
 TList* getNext(TList *list) {
   return list->next;
 }
@@ -40,7 +40,7 @@ int getValue(TList *list) {
   return list->value;
 }
 
-//externSetter
+// externSetter
 void setValue(TList *list, int value) {
   list->value = value;
 
@@ -70,16 +70,20 @@ bool addSorted(int value, TList **list) {
     listSorted = listSorted->next;
   }
 
+  // the element was already inserted to the list and it returns false
   if (listSorted->value == value || (!isNull(listSorted->next)
     && listSorted->next->value == value))
     return false;
 
+  // pointers exchange (easy to draw on paper)
   TList *new_elem = initList(value);
   new_elem->next = listSorted->next;
   listSorted->next = new_elem;
+
   return true;
 }
 
+// connect two lists, self-explanatory
 void connectLists(TList *endfirst, TList *frontsecond) {
   TList *headNext = getNext(endfirst);
   endfirst->next = frontsecond;
@@ -88,9 +92,10 @@ void connectLists(TList *endfirst, TList *frontsecond) {
   return;
 }
 
+// deletes the given element from the list
 bool deleteElem(TList **list, int elem) {
+  // checking if it is the head
   if ((*list)->value == elem) {
-    //printf("here\n");
     TList *toFree = (*list);
     *list = (*list)->next;
     free(toFree);
@@ -99,21 +104,24 @@ bool deleteElem(TList **list, int elem) {
   }
 
   TList *temp = *list;
-
+  // looking for the element in the list
   while(!isNull(temp->next) && temp->next->value >= elem) {
     if (temp->next->value == elem) {
       TList *toFree = temp->next;
       temp->next = temp->next->next;
+
       free(toFree);
+      // we successfully deleted the given element
       return true;
     }
     else
       temp = temp->next;
   }
-
+  // there is no such element
   return false;
 }
 
+// frees the used memory
 void freeTList(TList *front) {
   if (isNull(front))
     return;

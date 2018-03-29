@@ -1,7 +1,7 @@
 #define MAX_SIZE 65536
 #define MAX_INT 2147483647
 #define EXIT_STATUS 1
-#define GUARDIAN -100
+#define GUARDIAN 0
 #define NULL_FILM -1
 #define MAX_INPUT_SIZE 50
 #define WORST_FILM -1
