@@ -8,9 +8,9 @@ struct List{
 
 typedef struct List TList;
 
-extern TList* initList(int value);
+extern TList* initList(int value, int *returned);
 
-extern void addFront(int value, TList **list);
+extern bool addFront(int value, TList **list);
 
 extern void setValue(TList *list, int value);
 
@@ -20,7 +20,7 @@ extern int getValue(TList *list);
 
 extern bool isNull(TList *list);
 
-extern bool addSorted(int value, TList **list);
+extern bool addSorted(int value, TList **list, int *returned);
 
 extern void connectLists(TList *endfirst, TList *frontsecond);
 

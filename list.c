@@ -6,10 +6,13 @@
 #include "constants.h"
 
 // init list with one element : value
-TList* initList(int value) {
+TList* initList(int value, int *returned) {
   TList *new_list = (TList *)malloc(sizeof(TList));
-  if (new_list == NULL)
-    exit(EXIT_STATUS);
+
+  if (new_list == NULL) {
+    *returned = 1;
+    return NULL;
+  }
 
   new_list->value = value;
   new_list->next = NULL;
@@ -22,13 +25,19 @@ TList* nullTList() {
 }
 
 // add new element to the front
-void addFront(int value, TList **list) {
-  TList *elem = initList(value);
+bool addFront(int value, TList **list) {
+  int notUsable = 0;
+  TList *elem = initList(value, &notUsable);
+
+  // mallock was unsuccessfull
+  if (notUsable == 1)
+    return false;
+
   elem->next = (*list);
   // changing the pointer list in memory to new_front (=elem)
   *list = elem;
 
-  return;
+  return true;
 }
 
 // externGetters
@@ -52,14 +61,14 @@ bool isNull(TList *list) {
 }
 
 // time complexity O(n), where n is number of elements in the list
-bool addSorted(int value, TList **list) {
+bool addSorted(int value, TList **list, int *returned) {
   TList *listSorted = *list;
-
+  // given list is a null, it inserts at the front
   if (isNull(listSorted)) {
-    *list = initList(value);
+    *list = initList(value, returned);
     return true;
   }
-
+  // first elem in a given list is smaller than [value]
   if (listSorted->value < value) {
     addFront(value, list);
     return true;
@@ -75,8 +84,13 @@ bool addSorted(int value, TList **list) {
     && listSorted->next->value == value))
     return false;
 
-  // pointers exchange (easy to draw on paper)
-  TList *new_elem = initList(value);
+  // new elem inicialisation
+  TList *new_elem = initList(value, returned);
+
+  // malloc was unsuccessfull
+  if (*returned == 1)
+    return false; // does not matter what we return at all
+    // pointers exchange (easy to draw on paper)
   new_elem->next = listSorted->next;
   listSorted->next = new_elem;
 

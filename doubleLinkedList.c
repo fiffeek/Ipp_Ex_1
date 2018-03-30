@@ -11,10 +11,14 @@ BList* nullBList() {
 }
 
 // list initialisation with a given value
-BList* initBList(short value) {
+BList* initBList(unsigned short value, int *ret) {
   BList *new_blist = (BList *)malloc(sizeof(BList));
-  if (new_blist == NULL)
-    exit(EXIT_STATUS);
+
+  if (new_blist == NULL) {
+    // malloc was unsuccessfull
+    *ret = EXIT_STATUS;
+    return NULL;
+  }
 
   new_blist->next = NULL;
   new_blist->prev = NULL;
@@ -24,8 +28,13 @@ BList* initBList(short value) {
 }
 
 // adding the element to two-way linked list (at the front)
-void addFrontBList(short value, BList **list) {
-  BList *elem = initBList(value);
+bool addFrontBList(unsigned short value, BList **list) {
+  int notUsable = 0;
+  BList *elem = initBList(value, &notUsable);
+
+  // malloc was unsuccessfull
+  if (notUsable == 1)
+    return false;
 
   if(!isNullBList(*list)) {
     (*list)->prev = elem;
@@ -34,19 +43,23 @@ void addFrontBList(short value, BList **list) {
 
   (*list) = elem;
 
-  return;
+  return true;
 }
 
 // adds given element after the first element in a given list
-void addAfterFirstElemBList(short value, BList *list) {
-  BList *elem = initBList(value);
+bool addAfterFirstElemBList(unsigned short value, BList *list) {
+  int notUsable = 0;
+  BList *elem = initBList(value, &notUsable);
+
+  if (notUsable == 1)
+    return false;
 
   elem->next = list->next;
   list->next->prev = elem;
   list->next = elem;
   elem->prev = list;
 
-  return;
+  return true;;
 }
 
 bool isNullBList(BList *list) {
@@ -105,7 +118,7 @@ BList* getPrevBList(BList *list) {
   return list->prev;
 }
 
-short getValueBList(BList *list) {
+unsigned short getValueBList(BList *list) {
   return list->value;
 }
 

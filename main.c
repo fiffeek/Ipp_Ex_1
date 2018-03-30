@@ -252,7 +252,7 @@ int main() {
     }
   }
 
-  freeTree(getZeroPointer());
+  freeTree(0);
   free(input);
 
   return 0;

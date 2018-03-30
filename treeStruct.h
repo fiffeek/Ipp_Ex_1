@@ -27,7 +27,7 @@ extern bool deleteMovie(int current, int rating);
 
 extern void traverseNode(Node *ptr);
 
-extern void freeTree(Node *ptr);
+extern void freeTree(unsigned short val);
 
 extern void traverseTree(Node *ptr);
 

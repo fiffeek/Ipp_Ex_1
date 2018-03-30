@@ -49,14 +49,21 @@ void initNode(int number) {
 
   // [GUARDIAN] = NOT EXISTING NODES [GUARDIANS]
   // adds guardians at the front and at the end of the children list
-  BList *temp = initBList(GUARDIAN);
-  addFrontBList(GUARDIAN, &temp);
+  int notUsable = 0;
+
+  BList *temp = initBList(GUARDIAN, &notUsable);
+  if (!addFrontBList(GUARDIAN, &temp) || notUsable == 1) {
+    // returned EXIT STATUS = 1
+    freeTree(0);
+    exit(EXIT_STATUS);
+  }
 
   zero->possibleValue = nullTList();
   zero->firstChild = temp;
   zero->lastChild = getNextBList(temp);
   zero->movies = nullTList();
   zero->pointerOnParentsList = nullBList();
+
 
   updatePointer(number, zero);
 
@@ -84,8 +91,14 @@ bool addChild(int parent, int current) {
   Node *par = getPointer(parent);
 
   // types castint and adding to children list after a front GUARDIAN
-  short temp = (short) current;
-  addAfterFirstElemBList(temp, (par->firstChild));
+  unsigned short temp = (unsigned short) current;
+
+  if (!addAfterFirstElemBList(temp, (par->firstChild))) {
+    // malloc returned  EXIT_STATUS
+    freeTree(0);
+    exit(EXIT_STATUS);
+  }
+
   curr->pointerOnParentsList = getNextBList(par->firstChild);
 
   return true;
@@ -140,10 +153,23 @@ bool addMovie(int current, int rating) {
   if (!validBounds(current, rating))
     return false;
 
-  if (!addSorted(rating, &(getPointer(current)->movies)))
+  int notUsable = 0;
+
+  if (!addSorted(rating, &(getPointer(current)->movies), &notUsable)) {
+    if (notUsable == 1) {
+      freeTree(0);
+      exit(EXIT_STATUS);
+    }
+
     return false;
-  else
+  } else {
+    if (notUsable == 1) {
+      freeTree(0);
+      exit(EXIT_STATUS);
+    }
+
     return true;
+  }
 }
 
 bool deleteMovie(int current, int rating) {
@@ -190,7 +216,10 @@ void traverseNode(Node *ptr) {
 }
 
 // frees the used memory
-void freeTree(Node *ptr) {
+void freeTree(unsigned short val) {
+  int temp = (int) val;
+  Node *ptr = getPointer(temp);
+
   if (ptr == NULL)
     return;
 
@@ -201,11 +230,12 @@ void freeTree(Node *ptr) {
       continue;
     }
 
-    freeTree(getPointer(list->value));
+    freeTree(list->value);
     list = list->next;
   }
 
   ptr->possibleValue = NULL;
+  ptr->lastChild = NULL;
   freeBList(ptr->firstChild);
   freeTList(ptr->movies);
   free(ptr);
