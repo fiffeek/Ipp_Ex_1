@@ -30,7 +30,7 @@ else
     echo "" >temp.err
     echo "" >valgrind.txt
 
-    if [ "$3" != "-nonval" ]; then
+    if [ "$3" == "-val" ]; then
       valgrind --error-exitcode=15 --leak-check=full \
       --show-leak-kinds=all --errors-for-leak-kinds=all -q \
       --log-file="valgrind.txt" ./$1 <${f} 1>temp.out 2>temp.err
@@ -49,16 +49,16 @@ else
       printf "\e[32m[passed]\e[39m with return code = \e[94m[${CODE}]\e[39m."
     fi
 
-    if [ "$3" == "-nonval" ]; then
+    if [ "$3" != "-val" ]; then
       echo ""
     fi
 
-    if [[ $(tail --lines=1 valgrind.txt) != "" ]] && [ "$3" != "-nonval" ]; then
+    if [[ $(tail --lines=1 valgrind.txt) != "" ]] && [ "$3" == "-val" ]; then
       echo -e " Valgrind returned \e[91m[ERROR]\e[39m."
       if [ $alreadyFailed == 0 ]; then
         (( failed++ ))
       fi
-    elif [ "$3" != "-nonval" ]; then
+    elif [ "$3" == "-val" ]; then
       echo -e " Valgrind returned \e[92m[NO ERRORS]\e[39m".
     fi
   done

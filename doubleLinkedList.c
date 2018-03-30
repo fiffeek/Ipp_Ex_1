@@ -87,6 +87,8 @@ void deleteConnectBLists(BList *toDelete, BList *startList2, BList *endList2) {
   return;
 }
 
+// deletes the element inside the list and there is nothing to be inserted
+// just another instance of deleteConnectBLists
 void specificDeletionInsideList(BList *firstList) {
   firstList->prev->next = firstList->next;
   firstList->next->prev = firstList->prev;

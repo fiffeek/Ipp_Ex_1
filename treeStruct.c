@@ -107,7 +107,7 @@ bool deleteChild(int current) {
   } else {
     // there are no children of the node that is being deleted
     specificDeletionInsideList(curr->pointerOnParentsList);
-
+    // free the 'alone' node
     free(curr->pointerOnParentsList);
   }
 
@@ -246,20 +246,21 @@ int marathon(int curr, int maxVal, int previousMax) {
     children = getNextBList(children);
   }
 
-  if (!isNull(current->possibleValue) && current->possibleValue->value == previousMax)
-    current->possibleValue = current->possibleValue->next;
+  if (!isNull(current->possibleValue)
+    && getValue(current->possibleValue) == previousMax)
+    current->possibleValue = getNext(current->possibleValue);
 
   if (isNull(current->possibleValue))
     return answer;
 
   int temp = current->possibleValue->value;
-  if (temp > maxVal && temp > answer) {
+  if (temp > maxVal && temp > answer)
     return temp;
-  }
 
   return answer;
 }
 
+// resets possibleValue pointer the the start of the movies list
 void makePossbileValues(int curr) {
   Node *current = getPointer(curr);
   current->possibleValue = current->movies;
@@ -285,14 +286,16 @@ void makePossbileValues(int curr) {
 bool bestMovies(int current, int k) {
   if (!validBounds(current, k))
     return false;
-
+  // resetting the possibleValue pointer
   makePossbileValues(current);
 
   int val = WORST_FILM;
   int previousMax = WORST_FILM;
+
   for (int i = 0; i < k; i++) {
     previousMax = marathon(current, val, previousMax);
 
+    // if there is no more possible value we end immediately
     if (previousMax == WORST_FILM) {
       if (i == 0)
         printf("NONE\n");
@@ -302,8 +305,8 @@ bool bestMovies(int current, int k) {
       break;
     }
 
-    if(i == 0 && k == 1)
-    printf("%d\n", previousMax);
+    if (i == 0 && k == 1)
+      printf("%d\n", previousMax);
     else if(i == 0)
       printf("%d", previousMax);
     else if(i < k - 1)

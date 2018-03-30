@@ -25,7 +25,7 @@ bool checkTwoInts(char *input, int k) {
   i++;
 
   while (i < k && input[i] != ' ') {
-    if (input[i] < '0' || input[i] > '9') {
+    if (input[i] < '0' || input[i] > '9' || (int1Size == 1 && input[i-1] == '0')) {
       fprintf(stderr, "%s\n", "ERROR");
       return false;
     }
@@ -47,7 +47,7 @@ bool checkTwoInts(char *input, int k) {
 
   while (i < k && input[i] != '\n') {
 
-    if (input[i] < '0' || input[i] > '9') {
+    if (input[i] < '0' || input[i] > '9' || (int2Size == 1 && input[i-1] == '0')) {
       fprintf(stderr, "%s\n", "ERROR");
       return false;
     }
@@ -92,7 +92,7 @@ bool checkOneInt(char *input, int k) {
   int intSize = 0;
 
   while (i < k && input[i] != '\n') {
-    if (input[i] < '0' || input[i] > '9') {
+    if (input[i] < '0' || input[i] > '9' || (intSize == 1 && input[i-1] == '0')) {
       fprintf(stderr, "%s\n", "ERROR");
       return false;
     }
@@ -183,14 +183,13 @@ int main() {
   initNode(0);
 
   while (fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
-    //printf("polecenie : %s\n", input);
     if (!checkLine(input)) {
       continue;
     } else {
       bool err = false;
       int parentID, userID, movieRating,k;
 
-      if (strncmp(input, "addUser", ADD_USER_SIZE) == 0) {
+      if (strncmp(input, "addUser ", ADD_USER_SIZE + 1) == 0) {
         copyStrings(input, ADD_USER_SIZE + 1);
 
         if (!sscanf(input, "%d %d", &parentID, &userID))
@@ -203,7 +202,7 @@ int main() {
           // adds the node
           fprintf(stdout, "%s\n", "OK");
         }
-      } else if (strncmp(input, "delUser", ADD_USER_SIZE) == 0) {
+      } else if (strncmp(input, "delUser ", ADD_USER_SIZE + 1) == 0) {
         copyStrings(input, ADD_USER_SIZE + 1);
 
         if (!sscanf(input, "%d", &userID))
@@ -214,7 +213,7 @@ int main() {
         } else {
           printf("OK\n");
         }
-      } else if (strncmp(input, "addMovie", ADD_MOVIE_SIZE) == 0) {
+      } else if (strncmp(input, "addMovie ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
         if (!sscanf(input, "%d %d", &userID, &movieRating))
@@ -225,7 +224,7 @@ int main() {
         } else {
           printf("OK\n");
         }
-      } else if (strncmp(input, "delMovie", ADD_MOVIE_SIZE) == 0) {
+      } else if (strncmp(input, "delMovie ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
         if (!sscanf(input, "%d %d", &userID, &movieRating))
@@ -236,7 +235,7 @@ int main() {
         } else {
           printf("OK\n");
         }
-      } else if (strncmp(input, "marathon", ADD_MOVIE_SIZE) == 0) {
+      } else if (strncmp(input, "marathon ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
         if (!sscanf(input, "%d %d", &userID, &k))
@@ -253,8 +252,8 @@ int main() {
     }
   }
 
-
   freeTree(getZeroPointer());
   free(input);
+
   return 0;
 }

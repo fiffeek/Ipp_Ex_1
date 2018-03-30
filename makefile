@@ -9,7 +9,7 @@ EXE=main
 
 all: $(OBJS) $(EXE)
 
-main: $(OBJS)
+main: $(OBJS) $(DEPS)
 	$(CC) $(CFLAGS) -o main $(OBJS)
 
 main.o: main.c treeStruct.h $(DEPS)
