@@ -5,13 +5,29 @@
 #include "treeStruct.h"
 #include "constants.h"
 
+bool toTheEndOfTheLine(char *input) {
+  int k = strlen(input);
+
+  if (input[k - 1] != '\n') {
+    while(fgetc(stdin) != '\n'){
+      if (feof(stdin)){
+        break;
+      }
+    };
+  }
+
+  fprintf(stderr, "%s\n", "ERROR");
+
+  return false;
+}
+
 bool checkTwoInts(char *input, int k) {
   int i = 0, int1Size = 0, int2Size = 0;
 
   while (i < k && input[i] != ' ') {
     if (!((input[i] >= 'a' && input[i] <= 'z')
       || (input[i] >= 'A' || input[i] <= 'Z'))) {
-      fprintf(stderr, "%s\n", "ERROR");
+      toTheEndOfTheLine(input);
       return false;
     }
 
@@ -19,14 +35,14 @@ bool checkTwoInts(char *input, int k) {
   }
 
   if (input[i] != ' ') {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
   i++;
 
   while (i < k && input[i] != ' ') {
     if (input[i] < '0' || input[i] > '9' || (int1Size == 1 && input[i-1] == '0')) {
-      fprintf(stderr, "%s\n", "ERROR");
+      toTheEndOfTheLine(input);
       return false;
     }
 
@@ -35,12 +51,12 @@ bool checkTwoInts(char *input, int k) {
   }
 
   if (int1Size >= 6) {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
 
   if (input[i] != ' ') {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
   i++;
@@ -48,7 +64,7 @@ bool checkTwoInts(char *input, int k) {
   while (i < k && input[i] != '\n') {
 
     if (input[i] < '0' || input[i] > '9' || (int2Size == 1 && input[i-1] == '0')) {
-      fprintf(stderr, "%s\n", "ERROR");
+      toTheEndOfTheLine(input);
       return false;
     }
 
@@ -57,13 +73,12 @@ bool checkTwoInts(char *input, int k) {
   }
 
   if (int2Size >= 11) {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
 
   if (input[i] != '\n') {
-    fprintf(stderr, "%s\n", "ERROR");
-    while(fgetc(stdin) != '\n'){};
+    toTheEndOfTheLine(input);
     return false;
   }
 
@@ -76,7 +91,7 @@ bool checkOneInt(char *input, int k) {
   while (i < k && input[i] != ' ') {
     if (!((input[i] >= 'a' && input[i] <= 'z')
       || (input[i] >= 'A' || input[i] <= 'Z'))) {
-      fprintf(stderr, "%s\n", "ERROR");
+      toTheEndOfTheLine(input);
       return false;
     }
 
@@ -84,7 +99,7 @@ bool checkOneInt(char *input, int k) {
   }
 
   if (input[i] != ' ') {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
   i++;
@@ -93,7 +108,7 @@ bool checkOneInt(char *input, int k) {
 
   while (i < k && input[i] != '\n') {
     if (input[i] < '0' || input[i] > '9' || (intSize == 1 && input[i-1] == '0')) {
-      fprintf(stderr, "%s\n", "ERROR");
+      toTheEndOfTheLine(input);
       return false;
     }
 
@@ -102,30 +117,17 @@ bool checkOneInt(char *input, int k) {
   }
 
   if (intSize >= 6) {
-    fprintf(stderr, "%s\n", "ERROR");
+    toTheEndOfTheLine(input);
     return false;
   }
 
   if (input[i] != '\n') {
-    fprintf(stderr, "%s\n", "ERROR");
-    while(fgetc(stdin) != '\n'){};
+    toTheEndOfTheLine(input);
     return false;
   }
   i++;
 
   return true;
-}
-
-bool toTheEndOfTheLine(char *input) {
-  int k = strlen(input);
-
-  if (input[k - 1] != '\n') {
-    while(fgetc(stdin) != '\n'){};
-  }
-
-  fprintf(stderr, "%s\n", "ERROR");
-
-  return false;
 }
 
 bool checkLine(char *input) {
@@ -136,7 +138,11 @@ bool checkLine(char *input) {
 
   if (input[0] == '#') {
     if (input[k - 1] != '\n') {
-      while(fgetc(stdin) != '\n'){};
+      while(fgetc(stdin) != '\n'){
+        if (feof(stdin)){
+          break;
+        }
+      }
     }
 
     return false;
@@ -183,6 +189,7 @@ int main() {
   initNode(0);
 
   while (fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
+    //printf("%s\n", input);
     if (!checkLine(input)) {
       continue;
     } else {
@@ -245,7 +252,12 @@ int main() {
           fprintf(stderr, "%s\n", "ERROR");
         }
       } else {
-        while(fgetc(stdin) != '\n'){};
+        if (input[strlen(input) - 1] != '\n')
+          while(fgetc(stdin) != '\n'){
+            if (feof(stdin)){
+              break;
+            }
+          };
 
         fprintf(stderr, "%s\n", "ERROR");
       }

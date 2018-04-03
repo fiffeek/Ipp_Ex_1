@@ -12,8 +12,8 @@ then
   echo "runs every *.in file in /<dir> on <prog>"
   echo "and checks the output files with all *.out and *.err in /<dir>"
   echo "------------"
-  echo "if <valgrind_flag> is set to -nonval it does not run memory checks"
-  echo "otherwise it searches for memory leaks"
+  echo "if <valgrind_flag> is set to -val it does run memory checks"
+  echo "otherwise it does not search for memory leaks"
   echo "------------"
 else
   failed=0

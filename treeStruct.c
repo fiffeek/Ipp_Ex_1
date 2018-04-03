@@ -248,8 +248,8 @@ void traverseTree(Node *ptr) {
   return;
 }
 
-// memory complexity : O(2k + stack [prob log m])
-// time complexity : O(k * n), where n is
+// memory complexity : O(stack [3*4*maxHeight bytes])
+// time complexity : O(n), where n is
 // a number of children of *current
 int marathon(int curr, int maxVal, int previousMax) {
   Node *current = getPointer(curr);
