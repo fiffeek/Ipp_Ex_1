@@ -135,7 +135,7 @@ bool deleteChild(int current) {
   return true;
 }
 
-bool validBounds(int current, int rating) {
+bool validBounds(int current, long long rating) {
   // current is out of bounds
   if (current < 0 || current >= MAX_SIZE)
     return false;
@@ -149,11 +149,12 @@ bool validBounds(int current, int rating) {
   return true;
 }
 
-bool addMovie(int current, int rating) {
-  if (!validBounds(current, rating))
+bool addMovie(int current, long long rating_ll) {
+  if (!validBounds(current, rating_ll))
     return false;
 
   int notUsable = 0;
+  int rating = (int) rating_ll;
 
   if (!addSorted(rating, &(getPointer(current)->movies), &notUsable)) {
     if (notUsable == 1) {
@@ -172,12 +173,14 @@ bool addMovie(int current, int rating) {
   }
 }
 
-bool deleteMovie(int current, int rating) {
-  if(!validBounds(current, rating))
+bool deleteMovie(int current, long long rating_ll) {
+  if(!validBounds(current, rating_ll))
     return false;
 
   if(getPointer(current)->movies == NULL)
     return false;
+
+  int rating = (int) rating_ll;
 
   if (!deleteElem(&(getPointer(current)->movies), rating))
     return false;
@@ -313,9 +316,17 @@ void makePossbileValues(int curr) {
 // parent's movies list and (if M is the best film on parent's list)
 // children movies list as long as every film in the answer array from
 // a child list has better rating than M
-bool bestMovies(int current, int k) {
-  if (!validBounds(current, k))
+bool bestMovies(int current, long long k_ll) {
+  if (!validBounds(current, k_ll))
     return false;
+
+  int k = (int) k_ll;
+
+  if (k == 0) {
+    printf("NONE\n");
+    return true;
+  }
+  
   // resetting the possibleValue pointer
   makePossbileValues(current);
 
@@ -344,9 +355,6 @@ bool bestMovies(int current, int k) {
     else
       printf(" %d\n", previousMax);
   }
-
-  if (k == 0)
-    printf("NONE\n");
 
   return true;
 }

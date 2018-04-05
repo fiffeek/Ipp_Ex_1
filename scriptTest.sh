@@ -6,7 +6,7 @@ then
   echo "------------"
   echo "scriptTest.sh"
   echo "------------"
-  echo "./script_test <prog> <dir> <valgrind_flag>"
+  echo "./scriptTest <prog> <dir> <valgrind_flag>"
   echo "where <prog> = program and <dir> = output directory"
   echo "------------"
   echo "runs every *.in file in /<dir> on <prog>"
@@ -19,9 +19,9 @@ else
   failed=0
   count=0
 
-  echo "Testing in directory /$2."
+  echo "Testing in directory /${2}."
 
-  for f in $2/*.in; do
+  for f in "$2"/*.in; do
     alreadyFailed=0
     (( count++ ))
 

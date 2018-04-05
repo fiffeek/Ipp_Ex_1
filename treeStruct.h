@@ -19,11 +19,11 @@ extern bool addChild(int parent, int current);
 
 extern bool deleteChild(int current);
 
-extern bool validBounds(int current, int rating);
+extern bool validBounds(int current, long long rating_ll);
 
-extern bool addMovie(int current, int rating);
+extern bool addMovie(int current, long long rating_ll);
 
-extern bool deleteMovie(int current, int rating);
+extern bool deleteMovie(int current, long long rating_ll);
 
 extern void traverseNode(Node *ptr);
 
@@ -31,6 +31,6 @@ extern void freeTree(unsigned short val);
 
 extern void traverseTree(Node *ptr);
 
-extern bool bestMovies(int current, int k);
+extern bool bestMovies(int current, long long k_ll);
 
 #endif /* !FILE_SEEN */

@@ -5,6 +5,7 @@
 #include "treeStruct.h"
 #include "constants.h"
 
+// reads file until the EOF or '\n' is available
 bool toTheEndOfTheLine(char *input) {
   int k = strlen(input);
 
@@ -13,7 +14,7 @@ bool toTheEndOfTheLine(char *input) {
       if (feof(stdin)){
         break;
       }
-    };
+    }
   }
 
   fprintf(stderr, "%s\n", "ERROR");
@@ -21,29 +22,28 @@ bool toTheEndOfTheLine(char *input) {
   return false;
 }
 
+// check if the patters is correct
+// string number number\n
 bool checkTwoInts(char *input, int k) {
   int i = 0, int1Size = 0, int2Size = 0;
 
   while (i < k && input[i] != ' ') {
     if (!((input[i] >= 'a' && input[i] <= 'z')
       || (input[i] >= 'A' || input[i] <= 'Z'))) {
-      toTheEndOfTheLine(input);
-      return false;
+      return toTheEndOfTheLine(input);
     }
 
     i++;
   }
 
   if (input[i] != ' ') {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
   i++;
 
   while (i < k && input[i] != ' ') {
     if (input[i] < '0' || input[i] > '9' || (int1Size == 1 && input[i-1] == '0')) {
-      toTheEndOfTheLine(input);
-      return false;
+      return toTheEndOfTheLine(input);
     }
 
     int1Size++;
@@ -51,21 +51,18 @@ bool checkTwoInts(char *input, int k) {
   }
 
   if (int1Size >= 6) {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
 
   if (input[i] != ' ') {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
   i++;
 
   while (i < k && input[i] != '\n') {
 
     if (input[i] < '0' || input[i] > '9' || (int2Size == 1 && input[i-1] == '0')) {
-      toTheEndOfTheLine(input);
-      return false;
+      return toTheEndOfTheLine(input);
     }
 
     int2Size++;
@@ -73,34 +70,32 @@ bool checkTwoInts(char *input, int k) {
   }
 
   if (int2Size >= 11) {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
 
   if (input[i] != '\n') {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
 
   return true;
 }
 
+// the same as above but another pattern
+// string number\n
 bool checkOneInt(char *input, int k) {
   int i = 0;
 
   while (i < k && input[i] != ' ') {
     if (!((input[i] >= 'a' && input[i] <= 'z')
       || (input[i] >= 'A' || input[i] <= 'Z'))) {
-      toTheEndOfTheLine(input);
-      return false;
+      return toTheEndOfTheLine(input);
     }
 
     i++;
   }
 
   if (input[i] != ' ') {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
   i++;
 
@@ -108,8 +103,7 @@ bool checkOneInt(char *input, int k) {
 
   while (i < k && input[i] != '\n') {
     if (input[i] < '0' || input[i] > '9' || (intSize == 1 && input[i-1] == '0')) {
-      toTheEndOfTheLine(input);
-      return false;
+      return toTheEndOfTheLine(input);
     }
 
     intSize++;
@@ -117,19 +111,18 @@ bool checkOneInt(char *input, int k) {
   }
 
   if (intSize >= 6) {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
 
   if (input[i] != '\n') {
-    toTheEndOfTheLine(input);
-    return false;
+    return toTheEndOfTheLine(input);
   }
   i++;
 
   return true;
 }
 
+// checks what pattern to search for
 bool checkLine(char *input) {
   int k = strlen(input);
 
@@ -169,6 +162,8 @@ bool checkLine(char *input) {
   }
 }
 
+// copies string to the same string but
+// for all k : string[0] = string[start + k]
 void copyStrings(char *input, int start) {
   int k = strlen(input);
 
@@ -189,12 +184,12 @@ int main() {
   initNode(0);
 
   while (fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
-    //printf("%s\n", input);
     if (!checkLine(input)) {
       continue;
     } else {
       bool err = false;
-      int parentID, userID, movieRating,k;
+      int parentID, userID;
+      long long movieRating,k;
 
       if (strncmp(input, "addUser ", ADD_USER_SIZE + 1) == 0) {
         copyStrings(input, ADD_USER_SIZE + 1);
@@ -223,7 +218,7 @@ int main() {
       } else if (strncmp(input, "addMovie ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
-        if (!sscanf(input, "%d %d", &userID, &movieRating))
+        if (!sscanf(input, "%d %lli", &userID, &movieRating))
             err = true;
 
         if (err || !addMovie(userID, movieRating)) {
@@ -234,7 +229,7 @@ int main() {
       } else if (strncmp(input, "delMovie ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
-        if (!sscanf(input, "%d %d", &userID, &movieRating))
+        if (!sscanf(input, "%d %lli", &userID, &movieRating))
             err = true;
 
         if (err || !deleteMovie(userID, movieRating)) {
@@ -245,7 +240,7 @@ int main() {
       } else if (strncmp(input, "marathon ", ADD_MOVIE_SIZE + 1) == 0) {
         copyStrings(input, ADD_MOVIE_SIZE + 1);
 
-        if (!sscanf(input, "%d %d", &userID, &k))
+        if (!sscanf(input, "%d %lli", &userID, &k))
             err = true;
 
         if (err || !bestMovies(userID, k)) {
@@ -264,6 +259,7 @@ int main() {
     }
   }
 
+  // frees the momory used
   freeTree(0);
   free(input);
 

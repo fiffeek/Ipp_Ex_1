@@ -1,5 +1,4 @@
 CC=gcc
-CXX=g++
 CFLAGS=-Wall -Wextra -std=c11 -O2
 DEPS=constants.h
 OBJS=list.o doubleLinkedList.o treeStruct.o main.o
@@ -21,8 +20,5 @@ treeStruct.o: treeStruct.c treeStruct.h list.h doubleLinkedList.h $(DEPS)
 %.o: %.c %.h $(DEPS)
 	$(CC) $(CFLAGS) -c $<
 
-brute: brute.cpp
-	$(CXX) -o brute brute.cpp
-
 clean:
-	rm -f *.o *.gch main *.err *.in *.out brute
+	rm -f *.o *.gch main *.err *.in *.out
